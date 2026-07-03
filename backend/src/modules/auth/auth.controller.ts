@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import { AppError } from "../../shared/errors/AppError";
 import { authService } from "./auth.service";
 import { loginSchema, registerSchema } from "./auth.validation";
 
 export class AuthController {
-
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const data = registerSchema.parse(req.body);
@@ -30,6 +30,25 @@ export class AuthController {
         success: true,
         message: "Login successful",
         data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async me(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user?.userId;
+
+      if (!userId) {
+        throw new AppError("Unauthorized", 401);
+      }
+
+      const user = await authService.me(userId);
+
+      res.status(200).json({
+        success: true,
+        data: user,
       });
     } catch (error) {
       next(error);
