@@ -7,6 +7,8 @@ import { createResumeSchema } from "./resume.validation";
 
 const router = Router();
 
+router.get("/", authMiddleware, resumeController.getUserResumes);
+
 router.post(
   "/",
   authMiddleware,

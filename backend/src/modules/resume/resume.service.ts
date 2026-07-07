@@ -10,10 +10,8 @@ export class ResumeService {
     const { title, userId, file } = data;
 
     try {
-      // Extract text from the uploaded PDF
       const parsedText = await parsePDF(file.path);
 
-      // Save resume to the database
       const resume = await prisma.resume.create({
         data: {
           title,
@@ -28,11 +26,24 @@ export class ResumeService {
 
       return resume;
     } catch (error) {
-      // Delete uploaded file if anything fails
       await fs.unlink(file.path).catch(() => {});
 
       throw error;
     }
+  }
+
+  async getUserResumes(userId: string) {
+    return prisma.resume.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        originalFileName: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
   }
 }
 

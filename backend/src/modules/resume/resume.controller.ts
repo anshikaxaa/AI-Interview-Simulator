@@ -13,19 +13,37 @@ export class ResumeController {
       }
 
       const resume = await resumeService.createResume({ title, userId, file });
-      const response = {
-         id: resume.id,
-         title: resume.title,
-         originalFileName: resume.originalFileName,
-         createdAt: resume.createdAt,
-         updatedAt: resume.updatedAt,
-        };
-        res.status(201).json({
-            success: true,
-            message: "Resume uploaded successfully.",
-            data: response,
-        });
 
+      res.status(201).json({
+    success: true,
+    message: "Resume uploaded successfully.",
+    data: {
+        id: resume.id,
+        title: resume.title,
+        originalFileName: resume.originalFileName,
+        createdAt: resume.createdAt,
+        updatedAt: resume.updatedAt,
+  },
+});
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getUserResumes(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user?.id ?? req.user?.userId;
+
+      if (!userId) {
+        throw new Error("Authenticated user is required");
+      }
+
+      const resumes = await resumeService.getUserResumes(userId);
+
+      res.status(200).json({
+        success: true,
+        data: resumes,
+      });
     } catch (error) {
       next(error);
     }

@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import pdfParse from "pdf-parse";
+import { AppError } from "../errors/AppError";
 
 export async function parsePDF(filePath: string): Promise<string> {
   try {
@@ -19,15 +20,20 @@ export async function parsePDF(filePath: string): Promise<string> {
 
     // Reject empty or image-only PDFs
     if (!normalizedText) {
-      throw new Error("No text could be extracted from the PDF.");
+      throw new AppError(
+        "No readable text could be extracted from the uploaded PDF. Please upload a text-based PDF.",
+        400
+      );
     }
 
     return normalizedText;
   } catch (error) {
-  throw new Error(
-    `Failed to parse PDF: ${
-      error instanceof Error ? error.message : "Unknown error"
-    }`
-  );
-}
+    if (error instanceof AppError) {
+      throw error;
+    }
+
+    console.error(error);
+
+    throw new AppError("Failed to parse PDF.", 500);
+  }
 }
