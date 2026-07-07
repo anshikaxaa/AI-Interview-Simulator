@@ -32,6 +32,7 @@ const fileFilter: multer.Options["fileFilter"] = (_req, file, cb) => {
   cb(null, true);
 };
 
+//limit file size
 export const resumeUpload = multer({
   storage,
   fileFilter,
