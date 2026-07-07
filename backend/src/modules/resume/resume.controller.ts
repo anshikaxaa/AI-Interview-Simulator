@@ -13,7 +13,19 @@ export class ResumeController {
       }
 
       const resume = await resumeService.createResume({ title, userId, file });
-      res.status(201).json({ success: true, data: resume });
+      const response = {
+         id: resume.id,
+         title: resume.title,
+         originalFileName: resume.originalFileName,
+         createdAt: resume.createdAt,
+         updatedAt: resume.updatedAt,
+        };
+        res.status(201).json({
+            success: true,
+            message: "Resume uploaded successfully.",
+            data: response,
+        });
+
     } catch (error) {
       next(error);
     }
