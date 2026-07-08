@@ -17,4 +17,6 @@ router.post(
   resumeController.create
 );
 
+router.delete("/:id", authMiddleware, resumeController.deleteResume);
+
 export default router;
