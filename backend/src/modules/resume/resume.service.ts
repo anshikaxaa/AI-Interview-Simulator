@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 
 import prisma from "../../shared/db/prisma";
-import { parsePDF } from "../../shared/utils/pdfParser";
+import { parsePDF } from "../../shared/utils/pdf/pdfParser";
 
 import { CreateResumeDTO } from "./resume.types";
 import { AppError } from "../../shared/errors/AppError";

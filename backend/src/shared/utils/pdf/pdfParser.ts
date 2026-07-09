@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import pdfParse from "pdf-parse";
-import { AppError } from "../errors/AppError";
+import { AppError } from "../../errors/AppError";
 
 export async function parsePDF(filePath: string): Promise<string> {
   try {
