@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authMiddleware } from "../../shared/middleware/auth.middleware";
-import { resumeUpload } from "../../shared/middleware/upload/resumeUpload";
+import { createPdfUpload } from "../../shared/middleware/upload/pdfUpload";
 import { validateRequest } from "../../shared/middleware/validateRequest";
 import { resumeController } from "./resume.controller";
 import { createResumeSchema } from "./resume.validation";
@@ -12,7 +12,7 @@ router.get("/", authMiddleware, resumeController.getUserResumes);
 router.post(
   "/",
   authMiddleware,
-  resumeUpload.single("file"),
+  createPdfUpload("resumes").single("file"),
   validateRequest(createResumeSchema),
   resumeController.create
 );

@@ -4,7 +4,11 @@ import multer from "multer";
 import { v4 as uuid } from "uuid";
 
 // Configure upload destination
-const uploadPath = path.join(process.cwd(), "uploads", "resumes");
+function createPdfUpload(folderName: string) {
+  const uploadPath = path.join
+      (process.cwd(),
+      "uploads", 
+      folderName);
 
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
@@ -33,10 +37,13 @@ const fileFilter: multer.Options["fileFilter"] = (_req, file, cb) => {
 };
 
 //limit file size
-export const resumeUpload = multer({
+return multer({
   storage,
   fileFilter,
   limits: {
     fileSize: 5 * 1024 * 1024,
   },
 });
+}
+
+export { createPdfUpload };
