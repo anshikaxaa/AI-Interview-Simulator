@@ -10,7 +10,10 @@ export class ResumeController {
       const userId = req.user?.id ?? req.user?.userId;
 
       if (!file || !userId) {
-        throw new Error("Resume file and authenticated user are required");
+        throw new AppError(
+          "Resume file and authenticated user are required"
+        , 400
+        );
       }
 
       const resume = await resumeService.createResume({ title, userId, file });

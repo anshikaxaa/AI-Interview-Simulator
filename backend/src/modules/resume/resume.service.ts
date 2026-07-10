@@ -13,7 +13,15 @@ export class ResumeService {
     try {
       const parsedText = await parsePDF(file.path);
 
-      const resume = await prisma.resume.create({
+
+      if (!parsedText.trim()) {
+  throw new AppError(
+    "The uploaded PDF contains no readable text.",
+    400
+  );
+}
+
+      return prisma.resume.create({
         data: {
           title,
           originalFileName: file.originalname,
@@ -25,7 +33,6 @@ export class ResumeService {
         },
       });
 
-      return resume;
     } catch (error) {
       await fs.unlink(file.path).catch(() => {});
 
