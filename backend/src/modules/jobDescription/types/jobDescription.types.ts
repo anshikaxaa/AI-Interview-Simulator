@@ -6,3 +6,8 @@ export interface CreateJobDescriptionDTO {
   userId: string;
   file: Express.Multer.File;
 }
+
+export interface UpdateJobDescriptionDTO {
+  title?: string;
+  companyName?: string | null;
+}

@@ -3,6 +3,7 @@ import { AppError } from "../../../shared/errors/AppError";
 import { jobDescriptionService } from "../services/createJobDescription.service";
 import { getJobDescriptionService } from "../services/getJobDescription.service";
 import { listJobDescriptionsService } from "../services/listJobDescription.service";
+import { updateJobDescriptionService } from "../services/updateJobDescription.service";
 
 export class JobDescriptionController {
   async create(req: Request, res: Response, next: NextFunction) {
@@ -98,6 +99,39 @@ async getById(
   }
 }
 
+
+async update(
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const jobDescriptionId = req.params.id;
+    const userId = req.user?.id ?? req.user?.userId;
+
+    if (!userId) {
+      throw new AppError(
+        "Authenticated user is required.",
+        401
+      );
+    }
+
+    const jobDescription =
+      await updateJobDescriptionService.execute(
+        userId,
+        jobDescriptionId,
+        req.body
+      );
+
+    res.status(200).json({
+      success: true,
+      message: "Job description updated successfully.",
+      data: jobDescription,
+    });
+  } catch (error) {
+    next(error);
+    }
+  }
 }
 
 export const jobDescriptionController = new JobDescriptionController();
