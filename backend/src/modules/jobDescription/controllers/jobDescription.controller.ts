@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-
 import { AppError } from "../../../shared/errors/AppError";
 import { jobDescriptionService } from "../services/createJobDescription.service";
-
+import { getJobDescriptionService } from "../services/getJobDescription.service";
 import { listJobDescriptionsService } from "../services/listJobDescription.service";
 
 export class JobDescriptionController {
@@ -67,6 +66,38 @@ export class JobDescriptionController {
     next(error);
   }
 }
+
+async getById(
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const jobDescriptionId = req.params.id;
+    const userId = req.user?.id ?? req.user?.userId;
+
+    if (!userId) {
+      throw new AppError(
+        "Authenticated user is required.",
+        401
+      );
+    }
+
+    const jobDescription =
+      await getJobDescriptionService.execute(
+        userId,
+        jobDescriptionId
+      );
+
+    res.status(200).json({
+      success: true,
+      data: jobDescription,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 }
 
 export const jobDescriptionController = new JobDescriptionController();

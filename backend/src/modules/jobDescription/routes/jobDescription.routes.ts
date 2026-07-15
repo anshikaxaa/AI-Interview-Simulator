@@ -22,4 +22,10 @@ router.get(
   jobDescriptionController.list
 );
 
+router.get(
+  "/:id",
+  authMiddleware,
+  jobDescriptionController.getById
+);
+
 export default router;
