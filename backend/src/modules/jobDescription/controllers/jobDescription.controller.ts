@@ -44,5 +44,4 @@ export class JobDescriptionController {
   }
 }
 
-export const jobDescriptionController =
-  new JobDescriptionController();
+export const jobDescriptionController = new JobDescriptionController();

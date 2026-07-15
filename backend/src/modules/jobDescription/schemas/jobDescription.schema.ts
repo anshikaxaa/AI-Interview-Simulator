@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 export const createJobDescriptionSchema = z.object({
-  body: z.object({
     title: z
       .string()
       .trim()
@@ -11,5 +10,4 @@ export const createJobDescriptionSchema = z.object({
       .string()
       .trim()
       .optional(),
-  }),
-});
+  });

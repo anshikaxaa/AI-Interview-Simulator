@@ -1,8 +1,7 @@
 import { Router } from "express";
 
 import { authMiddleware } from "../../../shared/middleware/auth.middleware";
-import { validateRequest } from "../../../shared/middleware/validateRequest";
-
+import { validateMultipartRequest } from "../../../shared/middleware/validateMultipartRequest";
 import { createJobDescriptionSchema } from "../schemas/jobDescription.schema";
 import { jobDescriptionUpload } from "../jobDescription.upload";
 import { jobDescriptionController } from "../controllers/jobDescription.controller";
@@ -13,7 +12,7 @@ router.post(
   "/",
   authMiddleware,
   jobDescriptionUpload.single("file"),
-  validateRequest(createJobDescriptionSchema),
+  validateMultipartRequest(createJobDescriptionSchema),
   jobDescriptionController.create
 );
 
