@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import { AppError } from "../../../shared/errors/AppError";
 import { jobDescriptionService } from "../services/createJobDescription.service";
 
+import { listJobDescriptionsService } from "../services/listJobDescription.service";
+
 export class JobDescriptionController {
   async create(req: Request, res: Response, next: NextFunction) {
     try {
@@ -42,6 +44,29 @@ export class JobDescriptionController {
       next(error);
     }
   }
+
+  async list(req: Request, res: Response, next: NextFunction) {
+  try {
+    const userId = req.user?.id ?? req.user?.userId;
+
+    if (!userId) {
+      throw new AppError(
+        "Authenticated user is required.",
+        401
+      );
+    }
+
+    const jobDescriptions =
+      await listJobDescriptionsService.execute(userId);
+
+    res.status(200).json({
+      success: true,
+      data: jobDescriptions,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 }
 
 export const jobDescriptionController = new JobDescriptionController();

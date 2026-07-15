@@ -16,4 +16,10 @@ router.post(
   jobDescriptionController.create
 );
 
+router.get(
+  "/",
+  authMiddleware,
+  jobDescriptionController.list
+);
+
 export default router;
