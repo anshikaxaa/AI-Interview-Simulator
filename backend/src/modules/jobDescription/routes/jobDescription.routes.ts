@@ -5,7 +5,7 @@ import { createJobDescriptionSchema } from "../schemas/jobDescription.schema";
 import { jobDescriptionUpload } from "../jobDescription.upload";
 import { jobDescriptionController } from "../controllers/jobDescription.controller";
 import { updateJobDescriptionSchema } from "../schemas/jobDescription.schema";
-
+import { deleteJobDescriptionService } from "../services/deleteJobDescription.service";
 const router = Router();
 
 router.post(
@@ -33,6 +33,12 @@ router.patch(
   authMiddleware,
   validateMultipartRequest(updateJobDescriptionSchema),
   jobDescriptionController.update
+);
+
+router.delete(
+  "/:id",
+  authMiddleware,
+  jobDescriptionController.delete
 );
 
 export default router;
