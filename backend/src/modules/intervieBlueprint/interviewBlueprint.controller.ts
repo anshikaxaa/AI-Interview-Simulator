@@ -9,7 +9,10 @@ export class InterviewBlueprintController {
   ) {
     try {
       const result =
-        await interviewBlueprintService.createInterviewBlueprint();
+        await interviewBlueprintService.createInterviewBlueprint(
+            req.user!.id,
+            req.body
+        );
 
       return res.status(200).json({
         success: true,
