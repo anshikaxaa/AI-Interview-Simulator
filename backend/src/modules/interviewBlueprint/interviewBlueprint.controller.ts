@@ -22,6 +22,28 @@ export class InterviewBlueprintController {
       next(error);
     }
   }
+  async generateBlueprint(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const blueprintId = String(req.params.id);
+      const result =
+        await interviewBlueprintService.generateBlueprint(
+          req.user!.id,
+          blueprintId
+        );
+
+      return res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
 }
 
 export const interviewBlueprintController =

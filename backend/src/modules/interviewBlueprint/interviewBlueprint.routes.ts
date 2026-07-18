@@ -13,4 +13,10 @@ router.post(
   interviewBlueprintController.createInterviewBlueprint
 );
 
+router.post(
+  "/:id/generate",
+  authMiddleware,
+  interviewBlueprintController.generateBlueprint
+);
+
 export default router;

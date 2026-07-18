@@ -3,7 +3,7 @@ import cors from "cors";
 import authRoutes from "./modules/auth/auth.routes";
 import resumeRoutes from "./modules/resume/resume.routes";
 import jobDescriptionRoutes from "./modules/jobDescription/routes/jobDescription.routes";
-import interviewBlueprintRoutes from "./modules/intervieBlueprint/interviewBlueprint.routes";
+import interviewBlueprintRoutes from "./modules/interviewBlueprint/interviewBlueprint.routes";
 import { errorHandler } from "./shared/middleware/error.middleware";
 
 const app = express();
