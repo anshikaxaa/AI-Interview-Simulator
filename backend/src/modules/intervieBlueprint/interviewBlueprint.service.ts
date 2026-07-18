@@ -13,12 +13,14 @@ export class InterviewBlueprintService {
     const resume = await prisma.resume.findFirst({
       where: { id: resumeId, userId },
     });
+    
     if (!resume) {
       throw new AppError("Resume not found", 404);
 }
     if (resume.userId !== userId) {
       throw new AppError("Unauthorized", 403);
 }
+
     const jobDescription = await prisma.jobDescription.findUnique({
       where: {
         id: jobDescriptionId,
@@ -32,6 +34,18 @@ export class InterviewBlueprintService {
     if (jobDescription.userId !== userId) {
       throw new AppError("Unauthorized", 403);
 }
+  const existingBlueprint = await prisma.interviewBlueprint.findFirst({
+  where: {
+    userId,
+    resumeId,
+    jobDescriptionId,
+  },
+});
+
+  if (existingBlueprint) {
+  throw new AppError("Interview blueprint already exists", 409);
+}
+
   const blueprint = await prisma.interviewBlueprint.create({
   data: {
     userId,
