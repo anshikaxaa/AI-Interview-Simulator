@@ -33,43 +33,10 @@ enum BlueprintFailureCode {
   UNKNOWN
 }
 
-model InterviewBlueprint {
-  id String @id @default(cuid())
-
-  status        InterviewBlueprintStatus @default(PENDING)
-  blueprintData Json?
-  failureReason String?
-  providerResponseId String?
-
-  modelName     String?
-  modelVersion  String?
-  promptVersion String?
-
-  promptTokenCount Int?
-  outputTokenCount Int?
-  totalTokenCount  Int?
-
-  generationStartedAt   DateTime?
-  generationCompletedAt DateTime?
-
-  userId           String
-  resumeId         String
-  jobDescriptionId String
-
-  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  resume         Resume         @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  jobDescription JobDescription @relation(fields: [jobDescriptionId], references: [id], onDelete: Cascade)
-
-  failureCode   BlueprintFailureCode?
-  failureReason String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId])
-  @@index([resumeId])
-  @@index([jobDescriptionId])
-  @@index([userId, status])
+enum InterviewSessionStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
 }
 
 model User {
@@ -80,9 +47,10 @@ model User {
   provider       AuthProvider @default(EMAIL)
   profilePicture String?
 
-  resumes            Resume[]
-  jobDescriptions    JobDescription[]
+  resumes             Resume[]
+  jobDescriptions     JobDescription[]
   interviewBlueprints InterviewBlueprint[]
+  interviewSessions   InterviewSession[]
 
   failureCode   BlueprintFailureCode?
   failureReason String?
@@ -101,8 +69,8 @@ model Resume {
   fileSize         Int
   parsedText       String
 
-  userId             String
-  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId              String
+  user                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   interviewBlueprints InterviewBlueprint[]
 
   failureCode   BlueprintFailureCode?
@@ -124,13 +92,77 @@ model JobDescription {
   fileSize         Int
   parsedText       String
 
-  userId             String
-  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId              String
+  user                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   interviewBlueprints InterviewBlueprint[]
-  
+
   failureCode   BlueprintFailureCode?
   failureReason String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model InterviewBlueprint {
+  id String @id @default(cuid())
+
+  status             InterviewBlueprintStatus @default(PENDING)
+  blueprintData      Json?
+  providerResponseId String?
+
+  modelName     String?
+  modelVersion  String?
+  promptVersion String?
+
+  promptTokenCount Int?
+  outputTokenCount Int?
+  totalTokenCount  Int?
+
+  generationStartedAt   DateTime?
+  generationCompletedAt DateTime?
+
+  userId           String
+  resumeId         String
+  jobDescriptionId String
+
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume            Resume             @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  jobDescription    JobDescription     @relation(fields: [jobDescriptionId], references: [id], onDelete: Cascade)
+  interviewSessions InterviewSession[]
+
+  failureCode   BlueprintFailureCode?
+  failureReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([resumeId])
+  @@index([jobDescriptionId])
+  @@index([userId, status])
+}
+
+model InterviewSession {
+  id String @id @default(cuid())
+
+  status InterviewSessionStatus @default(IN_PROGRESS)
+
+  currentQuestionIndex Int @default(0)
+
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  userId      String
+  blueprintId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  blueprint InterviewBlueprint @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([blueprintId])
+  @@index([status])
 }
