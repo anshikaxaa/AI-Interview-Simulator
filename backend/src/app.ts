@@ -4,6 +4,7 @@ import authRoutes from "./modules/auth/auth.routes";
 import resumeRoutes from "./modules/resume/resume.routes";
 import jobDescriptionRoutes from "./modules/jobDescription/routes/jobDescription.routes";
 import interviewBlueprintRoutes from "./modules/interviewBlueprint/interviewBlueprint.routes";
+import interviewSessionRoutes from "./modules/interviewSession/interviewSession.routes";
 import { errorHandler } from "./shared/middleware/error.middleware";
 
 const app = express();
@@ -14,6 +15,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/resumes", resumeRoutes);
 app.use("/api/job-descriptions", jobDescriptionRoutes);
 app.use("/api/interview-blueprints", interviewBlueprintRoutes);
+app.use("/api/interview-sessions", interviewSessionRoutes);
 
 app.get("/", (_req, res) => {
   res.status(200).json({

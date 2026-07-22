@@ -1,40 +1,11 @@
 import { z } from "zod";
 
-const interviewQuestionSchema = z.object({
-  id: z.string(),
-  question: z.string(),
-  category: z.string(),
-  difficulty: z.enum(["Easy", "Medium", "Hard"]),
-
-  expectedDuration: z.number(),
-
-  skillsAssessed: z.array(z.string()),
-
-  expectedAnswerPoints: z.array(z.string()),
-  followUpQuestions: z.array(z.string()),
-  evaluationCriteria: z.array(z.string()),
+export const createInterviewBlueprintSchema = z.object({
+  body: z.object({
+    resumeId: z.string().cuid(),
+    jobDescriptionId: z.string().cuid(),
+  }),
 });
 
-const interviewSectionSchema = z.object({
-  title: z.string(),
-  duration: z.number(),
-  questions: z.array(interviewQuestionSchema),
-});
-
-export const interviewBlueprintResponseSchema = z.object({
-  title: z.string(),
-  role: z.string(),
-  company: z.string(),
-
-  overallDifficulty: z.enum(["Easy", "Medium", "Hard"]),
-
-  estimatedDuration: z.number(),
-
-  instructions: z.array(z.string()),
-
-  sections: z.array(interviewSectionSchema),
-});
-
-export type InterviewBlueprintResponse = z.infer<
-  typeof interviewBlueprintResponseSchema
->;
+export type CreateInterviewBlueprintInput =
+  z.infer<typeof createInterviewBlueprintSchema>["body"];
