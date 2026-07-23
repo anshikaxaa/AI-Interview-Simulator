@@ -7,7 +7,7 @@ export function generateToken(userId: string) {
     { userId },
     JWT_SECRET,
     {
-      expiresIn: "7d",
+      expiresIn: "30d",
     }
   );
 }

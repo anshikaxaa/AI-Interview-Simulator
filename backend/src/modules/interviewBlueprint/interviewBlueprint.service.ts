@@ -51,12 +51,17 @@ export class InterviewBlueprintService {
   }
 
   async generateBlueprint(userId: string, blueprintId: string) {
+
+    console.log("1. Seive entered");
+
     const blueprint = await prisma.interviewBlueprint.findFirst({
       where: { 
         id: blueprintId, 
         userId 
       },
     });
+
+    console.log("2. Blueprint found:", !!blueprint);
 
     if (!blueprint) {
       throw new AppError(
@@ -69,7 +74,9 @@ export class InterviewBlueprintService {
       where: {
        id: blueprint!.resumeId,
       },
-});
+    });
+
+    console.log("3. Resume found:", !!resume);
 
     if (!resume) {
     throw new AppError(
@@ -83,6 +90,10 @@ const jobDescription = await prisma.jobDescription.findUnique({
     id: blueprint!.jobDescriptionId,
   },
 });
+
+console.log("4. Job description found:", !!jobDescription);
+
+console.log("5.Updating blueprint status to GENERATING");
 
     if (!jobDescription) {
       throw new AppError(
@@ -108,11 +119,14 @@ const jobDescription = await prisma.jobDescription.findUnique({
     },
 });
 
+console.log("6. Calling Gemini");
+
 const generatedBlueprint =
   await blueprintGeneratorService.generateInterviewBlueprint(
     resume.parsedText,
     jobDescription.parsedText
   );
+console.log("7. Gemini returned");
 
   await prisma.interviewBlueprint.update({
     where: {
@@ -124,6 +138,8 @@ const generatedBlueprint =
       generationCompletedAt: new Date(),
     },
   });
+
+  console.log("8. Blueprint updated to COMPLETED");
 
     return generatedBlueprint;
   }

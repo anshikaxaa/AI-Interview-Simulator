@@ -23,11 +23,19 @@ export class BlueprintGeneratorService {
 
 const rawResponse = response.text ?? "";
 
+console.log("========== RAW GEMINI RESPONSE ==========");
+console.log(rawResponse);
+console.log("=========================================");
+
 const cleanedResponse = rawResponse
   .replace(/^```json\s*/i, "")
   .replace(/^```\s*/i, "")
   .replace(/\s*```$/, "")
   .trim();
+
+console.log("========== CLEANED RESPONSE ==========");
+console.log(cleanedResponse);
+console.log("======================================");
 
 const parsedBlueprint = JSON.parse(cleanedResponse);
 
