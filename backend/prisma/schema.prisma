@@ -146,6 +146,7 @@ model InterviewSession {
   id String @id @default(cuid())
 
   status InterviewSessionStatus @default(IN_PROGRESS)
+  answers InterviewAnswer[]
 
   currentQuestionIndex Int @default(0)
 
@@ -165,4 +166,19 @@ model InterviewSession {
   @@index([userId])
   @@index([blueprintId])
   @@index([status])
+}
+
+model InterviewAnswer {
+  id            String   @id @default(cuid())
+  answerText    String
+  questionIndex Int
+  answeredAt    DateTime @default(now())
+
+  sessionId String
+  session   InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([sessionId, questionIndex])
 }
