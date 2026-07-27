@@ -9,3 +9,7 @@ export const createAnswerSchema = z.object({
       .max(10000, "Answer cannot exceed 10000 characters."),
   }),
 });
+
+export type CreateAnswerInput = z.infer<
+  typeof createAnswerSchema
+>["body"];
