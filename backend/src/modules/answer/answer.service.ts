@@ -1,6 +1,7 @@
 import prisma from "../../shared/db/prisma";
 import { AppError } from "../../shared/errors/AppError";
 import { CreateAnswerInput } from "./answer.schema";
+import { BlueprintData } from "../../shared/types/blueprint";
 
 export class AnswerService {
   async createAnswer(
@@ -8,11 +9,15 @@ export class AnswerService {
     sessionId: string,
     data: CreateAnswerInput
   ) {
+    
     const session = await prisma.interviewSession.findUnique({
-      where: {
-        id: sessionId,
-      },
-    });
+  where: {
+    id: sessionId,
+  },
+  include: {
+    blueprint: true,
+  },
+});
 
     if (!session) {
       throw new AppError("Interview session not found.", 404);
@@ -54,6 +59,9 @@ export class AnswerService {
 
       return createdAnswer;
     });
+
+    const blueprint =
+    session.blueprint.blueprintData as unknown as BlueprintData;
 
     return answer;
   }
