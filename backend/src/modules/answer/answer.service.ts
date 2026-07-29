@@ -37,11 +37,24 @@ export class AnswerService {
       );
     }
 
+    if (!session.blueprint.blueprintData) {
+    throw new AppError("Interview blueprint data not found.", 500);
+  }
+
+    const blueprint =
+      session.blueprint.blueprintData as unknown as BlueprintData;
+
+    const totalQuestions = blueprint.sections.reduce(
+      (total, section) => total + section.questions.length,
+      0
+    );
+
     const answer = await prisma.$transaction(async (tx) => {
+      const currentQuestionIndex = session.currentQuestionIndex;
       const createdAnswer = await tx.interviewAnswer.create({
         data: {
           answerText: data.answerText,
-          questionIndex: session.currentQuestionIndex,
+          questionIndex: currentQuestionIndex,
           sessionId: session.id,
         },
       });
@@ -57,11 +70,20 @@ export class AnswerService {
         },
       });
 
+      if (currentQuestionIndex + 1 === totalQuestions) {
+        await tx.interviewSession.update({
+          where: {
+            id: session.id,
+          },
+          data: {
+            status: "COMPLETED",
+            completedAt: new Date(),
+          },
+        });
+      }
+
       return createdAnswer;
     });
-
-    const blueprint =
-    session.blueprint.blueprintData as unknown as BlueprintData;
 
     return answer;
   }
