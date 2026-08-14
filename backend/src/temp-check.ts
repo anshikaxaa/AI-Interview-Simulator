@@ -1,19 +1,36 @@
 import prisma from "./shared/db/prisma";
 
 async function main() {
-  const blueprints = await prisma.interviewBlueprint.findMany({
+  const session = await prisma.interviewSession.findUnique({
+    where: {
+      id: "cmrx79biy0001u12ggrjx9nka",
+    },
     select: {
       id: true,
-      blueprintData: true,
       status: true,
-    },
-    take: 10,
-    orderBy: {
-      createdAt: "desc",
+      currentQuestionIndex: true,
+      completedAt: true,
+
+      answers: {
+        orderBy: {
+          questionIndex: "asc",
+        },
+        select: {
+          questionIndex: true,
+          answerText: true,
+        },
+      },
+
+      blueprint: {
+        select: {
+          id: true,
+          blueprintData: true,
+        },
+      },
     },
   });
 
-  console.log(JSON.stringify(blueprints, null, 2));
+  console.log(JSON.stringify(session, null, 2));
 }
 
 main()

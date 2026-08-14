@@ -7,33 +7,24 @@ export function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
-    try {
-  const authHeader = req.headers.authorization;
+  try {
+    const authHeader = req.headers.authorization;
 
-  console.log("Authorization Header:", authHeader); // Debugging line
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new AppError("Unauthorized", 401);
-  }
-
-  const token = authHeader.split(" ")[1];
-
-  console.log("Token:", token); // Debugging line
-
-  const decoded = verifyToken(token);
-
-  console.log("Decoded:", decoded); // Debugging line
-
-
-  req.user = {
-    id: decoded.userId,
-    userId: decoded.userId,
-  };
-  
-  next();
-} catch (error) {
-  console.error(error); // Log the error for debugging
-    next(new AppError("Unauthorized", 401));
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      throw new AppError("Unauthorized", 401);
     }
-}
 
+    const token = authHeader.split(" ")[1];
+
+    const decoded = verifyToken(token);
+
+    req.user = {
+      id: decoded.userId,
+      userId: decoded.userId,
+    };
+
+    next();
+  } catch (error) {
+    next(new AppError("Unauthorized", 401));
+  }
+}

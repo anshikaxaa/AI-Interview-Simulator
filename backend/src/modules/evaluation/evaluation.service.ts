@@ -33,11 +33,14 @@ function getQuestionTextFromBlueprint(
 }
 
 export async function evaluateInterview(
-  interviewSessionId: string
+  interviewSessionId: string,
+  userId: string
 ): Promise<EvaluationResult> {
-  const interviewSession = await prisma.interviewSession.findUnique({
+  const interviewSession = 
+  await prisma.interviewSession.findUnique({
     where: {
       id: interviewSessionId,
+      userId,
     },
     include: {
       blueprint: {
@@ -56,6 +59,27 @@ export async function evaluateInterview(
 
   if (!interviewSession) {
     throw new AppError("Interview session not found", 404);
+  }
+
+  if (interviewSession.status !== "COMPLETED") {
+  throw new AppError(
+    "Interview session is not completed",
+    400
+    );
+  }
+
+  const existingEvaluation =
+  await prisma.interviewEvaluation.findUnique({
+    where: {
+      sessionId: interviewSession.id,
+    },
+  });
+
+  if (existingEvaluation) {
+    throw new AppError(
+      "Interview evaluation already exists",
+      409
+    );
   }
 
   if (!interviewSession.blueprint.resume?.parsedText) {
