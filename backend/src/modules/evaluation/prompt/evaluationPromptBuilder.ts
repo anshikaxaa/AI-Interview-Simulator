@@ -154,5 +154,16 @@ Requirements:
 - Return at least one area for improvement.
 - Return at least one recommendation.
 - Include feedback for every interview question.
+- questionIndex must be zero-based.
+- The first interview question has questionIndex 0.
+- The second interview question has questionIndex 1.
+- Continue this pattern for all interview questions.
+- Return exactly one questionFeedback object for each interview question.
+- The assessment field must be one of the following values: 
+  - "EXCELLENT"
+  - "GOOD"
+  - "BORDERLINE"
+  - "NEEDS_IMPROVEMENT"
+- NEVER use "ABOVE AVERAGE", "WEAK", "EXCELLENT" or "BELOW AVERAGE" in the assessment field.
 `.trim();
 }

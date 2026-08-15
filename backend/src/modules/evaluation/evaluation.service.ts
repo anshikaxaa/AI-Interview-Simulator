@@ -130,3 +130,26 @@ export async function evaluateInterview(
 
   return evaluation;
 }
+
+export async function getEvaluation(
+  interviewSessionId: string,
+  userId: string
+): Promise<EvaluationResult> {
+  const evaluation = await prisma.interviewEvaluation.findFirst({
+    where: {
+      sessionId: interviewSessionId,
+      session: {
+        userId,
+      },
+    },
+  });
+
+  if (!evaluation) {
+    throw new AppError(
+      "Interview evaluation not found",
+      404
+    );
+  }
+
+  return evaluationResultSchema.parse(evaluation.feedback);
+}
