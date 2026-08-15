@@ -5,9 +5,9 @@ import type { EvaluationResult } from "./interfaces/evaluation.interface";
 import type { EvaluationPromptContext } from "./prompt/evaluationPrompt.interface";
 import { buildEvaluationPrompt } from "./prompt/evaluationPromptBuilder";
 import { generateEvaluation } from "./services/gemini.service";
-import type { InterviewBlueprintData } from "../interviewBlueprint/interfaces/blueprint.interface";
-import {interviewBlueprintDataSchema,} from "../interviewBlueprint/interviewBlueprint.schema";
-
+import {
+  interviewBlueprintDataSchema,
+} from "../interviewBlueprint/interviewBlueprint.schema";
 function getQuestionTextFromBlueprint(
   blueprintData: unknown,
   questionIndex: number
@@ -99,8 +99,7 @@ export async function evaluateInterview(
     jobDescriptionText: interviewSession.blueprint.jobDescription.parsedText,
     responses: interviewSession.answers.map((answer) => ({
       question: getQuestionTextFromBlueprint(
-        // blueprintData can be stored as JSON and may be null; ensure proper typing
-        interviewSession.blueprint.blueprintData as unknown as InterviewBlueprintData,
+       interviewSession.blueprint.blueprintData,
         answer.questionIndex
       ),
       answer: answer.answerText,
