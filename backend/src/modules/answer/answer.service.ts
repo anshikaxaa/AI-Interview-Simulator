@@ -1,8 +1,7 @@
 import prisma from "../../shared/db/prisma";
 import { AppError } from "../../shared/errors/AppError";
 import { CreateAnswerInput } from "./answer.schema";
-import { BlueprintData } from "../../shared/types/blueprint";
-
+import { interviewBlueprintDataSchema } from "../interviewBlueprint/interviewBlueprint.schema";
 export class AnswerService {
   async createAnswer(
     userId: string,
@@ -41,13 +40,28 @@ export class AnswerService {
     throw new AppError("Interview blueprint data not found.", 500);
   }
 
-    const blueprint =
-      session.blueprint.blueprintData as unknown as BlueprintData;
+    const parsedBlueprint = interviewBlueprintDataSchema.safeParse(
+      session.blueprint.blueprintData
+  );
 
-    const totalQuestions = blueprint.sections.reduce(
+  if (!parsedBlueprint.success) {
+    throw new AppError(
+      "Invalid interview blueprint data.",
+      500
+    );
+  }
+
+    const totalQuestions = parsedBlueprint.data.sections.reduce(
       (total, section) => total + section.questions.length,
       0
-    );
+  );
+
+  if (session.currentQuestionIndex >= totalQuestions) {
+  throw new AppError(
+    "No more interview questions are available.",
+    400
+  );
+}
 
     const answer = await prisma.$transaction(async (tx) => {
       const currentQuestionIndex = session.currentQuestionIndex;

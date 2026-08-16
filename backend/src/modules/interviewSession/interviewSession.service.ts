@@ -10,6 +10,7 @@ export class InterviewSessionService {
     const blueprint = await prisma.interviewBlueprint.findFirst({
       where: {
         id: data.blueprintId,
+        userId,
       },
     });
     if (!blueprint) {
