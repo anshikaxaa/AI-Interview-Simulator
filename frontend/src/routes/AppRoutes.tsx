@@ -1,19 +1,22 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import LoginPage from "../pages/auth/LoginPage";
-import RegisterPage from "../pages/auth/RegisterPage";
 import DashboardPage from "../pages/dashboard/DashboardPage";
 import JobDescriptionsPage from "../pages/job-descriptions/JobDescriptionsPage";
 import InterviewsPage from "../pages/interviews/InterviewsPage";
 import ReportsPage from "../pages/reports/ReportsPage";
 import ResumesPage from "../pages/resumes/ResumesPage";
+import LoginPage from "../pages/auth/LoginPage";
+import RegisterPage from "../pages/auth/RegisterPage";
 import ProtectedLayout from "../layouts/ProtectedLayout";
 import PublicLayout from "../layouts/PublicLayout";
+import IndexRedirect from "./IndexRedirect";
 
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<IndexRedirect />} />
+
         <Route element={<PublicLayout />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
