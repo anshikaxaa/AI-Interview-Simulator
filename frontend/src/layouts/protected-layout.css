@@ -36,12 +36,6 @@
   display: none;
 }
 
-.protected-layout.sidebar-closed .protected-sidebar nav a {
-  overflow: hidden;
-  white-space: nowrap;
-  text-indent: -9999px;
-}
-
 .protected-sidebar {
   padding: 24px;
   border-right: 1px solid #e2e8f0;
@@ -60,7 +54,11 @@
 }
 
 .protected-sidebar nav a {
-  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 8px 12px;
   border-radius: 8px;
   color: #334155;
   text-decoration: none;
@@ -74,6 +72,27 @@
   background: #e2e8f0;
   color: #0f172a;
   font-weight: 600;
+}
+
+.protected-sidebar nav a img {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.protected-sidebar nav a span {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.protected-layout.sidebar-closed .protected-sidebar nav a {
+  justify-content: center;
+  padding: 8px;
+}
+
+.protected-layout.sidebar-closed .protected-sidebar nav a span {
+  display: none;
 }
 
 .protected-main {

@@ -2,6 +2,11 @@ import { useState } from "react";
 import { NavLink, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 import "./protected-layout.css";
+import dashboardIcon from "../assets/icons/dashboard.png";
+import resumeIcon from "../assets/icons/resume.png";
+import jobDescriptionIcon from "../assets/icons/job-description.png";
+import interviewIcon from "../assets/icons/interview.png";
+import reportIcon from "../assets/icons/report.png";
 
 function ProtectedLayout() {
     const { user, isAuthenticated, isLoading, logout } = useAuth();
@@ -30,45 +35,50 @@ function ProtectedLayout() {
             >
             {isSidebarOpen ? "←" : "→"}
         </button>
-        
+
         <h1>AI Interview Simulator</h1>
 
         <nav>
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
-            Dashboard
-          </NavLink>
+  <NavLink
+    to="/dashboard"
+    className={({ isActive }) => (isActive ? "active" : "")}
+  >
+    <img src={dashboardIcon} alt="" />
+    <span>Dashboard</span>
+  </NavLink>
 
-          <NavLink
-            to="/resumes"
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
-            Resumes
-          </NavLink>
+  <NavLink
+    to="/resumes"
+    className={({ isActive }) => (isActive ? "active" : "")}
+  >
+    <img src={resumeIcon} alt="" />
+    <span>Resumes</span>
+  </NavLink>
 
-          <NavLink
-            to="/job-descriptions"
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
-            Job Descriptions
-          </NavLink>
+  <NavLink
+    to="/job-descriptions"
+    className={({ isActive }) => (isActive ? "active" : "")}
+  >
+    <img src={jobDescriptionIcon} alt="" />
+    <span>Job Descriptions</span>
+  </NavLink>
 
-          <NavLink
-            to="/interviews"
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
-            Interviews
-          </NavLink>
+  <NavLink
+    to="/interviews"
+    className={({ isActive }) => (isActive ? "active" : "")}
+  >
+    <img src={interviewIcon} alt="" />
+    <span>Interviews</span>
+  </NavLink>
 
-          <NavLink
-            to="/reports"
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
-            Reports
-          </NavLink>
-        </nav>
+  <NavLink
+    to="/reports"
+    className={({ isActive }) => (isActive ? "active" : "")}
+  >
+    <img src={reportIcon} alt="" />
+    <span>Reports</span>
+  </NavLink>
+</nav>
       </aside>
 
       <main className="protected-main">
