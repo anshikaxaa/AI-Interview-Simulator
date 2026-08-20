@@ -19,3 +19,24 @@ export async function getResumes(): Promise<GetResumesResponse> {
     auth: true,
   });
 }
+
+export async function createResume(
+  title: string,
+  file: File,
+): Promise<Resume> {
+  const formData = new FormData();
+
+  formData.append("title", title);
+  formData.append("file", file);
+
+  const response = await apiClient<{ success: true; data: Resume }>(
+    "/resumes",
+    {
+      method: "POST",
+      body: formData,
+      auth: true,
+    },
+  );
+
+  return response.data;
+}

@@ -12,7 +12,9 @@ export async function apiClient<T>(
 
   const requestHeaders = new Headers(headers);
 
-  requestHeaders.set("Content-Type", "application/json");
+    if (!(fetchOptions.body instanceof FormData)) {
+    requestHeaders.set("Content-Type", "application/json");
+  }
 
   if (auth) {
     const token = localStorage.getItem("token");
