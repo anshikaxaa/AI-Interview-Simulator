@@ -1,16 +1,27 @@
 import { useEffect, useState } from "react";
 import {
   createResume,
+  deleteResume,
   getResumes,
   type Resume,
 } from "../../api/resume.api";
 import "./resumes.css";
 
+
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 function ResumesPage() {
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-
+  const [listError, setListError] = useState("");
+  const [uploadError, setUploadError] = useState("");
+  const [deletingResumeId, setDeletingResumeId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -18,12 +29,12 @@ function ResumesPage() {
   useEffect(() => {
     async function loadResumes() {
       try {
-        setError("");
+        setListError("");
 
         const response = await getResumes();
         setResumes(response.data);
       } catch (err) {
-        setError(
+        setListError(
           err instanceof Error ? err.message : "Failed to load resumes.",
         );
       } finally {
@@ -36,17 +47,17 @@ function ResumesPage() {
 
   async function handleUpload() {
     if (!title.trim()) {
-      setError("Please enter a resume title.");
+      setUploadError("Please enter a resume title.");
       return;
     }
 
     if (!file) {
-      setError("Please select a PDF file.");
+      setUploadError("Please select a PDF file.");
       return;
     }
 
     try {
-      setError("");
+      setUploadError("");
       setIsUploading(true);
 
       const resume = await createResume(title.trim(), file);
@@ -64,13 +75,32 @@ function ResumesPage() {
         fileInput.value = "";
       }
     } catch (err) {
-      setError(
+      setUploadError(
         err instanceof Error ? err.message : "Failed to upload resume.",
       );
     } finally {
       setIsUploading(false);
     }
   }
+
+  async function handleDelete(id: string) {
+  try {
+    setListError("");
+    setDeletingResumeId(id);
+
+    await deleteResume(id);
+
+    setResumes((currentResumes) =>
+      currentResumes.filter((resume) => resume.id !== id),
+    );
+  } catch (err) {
+    setListError(
+      err instanceof Error ? err.message : "Failed to delete resume.",
+    );
+  } finally {
+    setDeletingResumeId(null);
+  }
+}
 
   return (
     <div className="resumes-page">
@@ -99,17 +129,23 @@ function ResumesPage() {
           </div>
 
           <div className="resume-form-group">
-            <label htmlFor="resume-file">PDF file</label>
-            <input
-              id="resume-file"
-              type="file"
-              accept=".pdf,application/pdf"
-              onChange={(event) => {
-                setFile(event.target.files?.[0] ?? null);
-              }}
-              disabled={isUploading}
-            />
-          </div>
+  <label htmlFor="resume-file">PDF file</label>
+  <input
+    id="resume-file"
+    type="file"
+    accept=".pdf,application/pdf"
+    onChange={(event) => {
+      setFile(event.target.files?.[0] ?? null);
+    }}
+    disabled={isUploading}
+  />
+
+  {uploadError && (
+    <p className="resume-form-error">{uploadError}</p>
+  )}
+</div>
+
+          
 
           <button
             type="button"
@@ -133,13 +169,13 @@ function ResumesPage() {
           </div>
         )}
 
-        {!isLoading && error && (
+        {!isLoading && listError && (
           <div className="resume-status resume-error">
-            <p>{error}</p>
+            <p>{listError}</p>
           </div>
         )}
 
-        {!isLoading && !error && resumes.length === 0 && (
+        {!isLoading && !listError && resumes.length === 0 && (
           <div className="resume-empty-state">
             <p>No resumes uploaded yet.</p>
           </div>
@@ -148,19 +184,28 @@ function ResumesPage() {
         {!isLoading && resumes.length > 0 && (
           <div className="resume-list">
             {resumes.map((resume) => (
-              <div className="resume-item" key={resume.id}>
-                <div className="resume-item-info">
-                  <h3>{resume.title}</h3>
-                  <p>{resume.originalFileName}</p>
-                </div>
+  <div className="resume-item" key={resume.id}>
+    <div className="resume-item-info">
+      <h3>{resume.title}</h3>
+      <p>{resume.originalFileName}</p>
+    </div>
 
-                <div className="resume-item-meta">
-                  <span>
-                    {new Date(resume.createdAt).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            ))}
+    <div className="resume-item-actions">
+      <div className="resume-item-meta">
+        <span>{formatDate(resume.createdAt)}</span>
+      </div>
+
+      <button
+  type="button"
+  className="resume-delete-button"
+  onClick={() => handleDelete(resume.id)}
+  disabled={deletingResumeId === resume.id}
+>
+  {deletingResumeId === resume.id ? "Deleting..." : "Delete"}
+</button>
+    </div>
+  </div>
+))}
           </div>
         )}
       </section>

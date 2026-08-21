@@ -179,3 +179,43 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.resume-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.resume-delete-button {
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background: #fff;
+  color: #b42318;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.resume-delete-button:hover {
+  background: #fef3f2;
+}
+
+@media (max-width: 600px) {
+  .resume-item-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.resume-delete-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.resume-form-error {
+  margin: 0;
+  color: #b42318;
+  font-size: 13px;
+}

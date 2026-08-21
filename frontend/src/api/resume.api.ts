@@ -40,3 +40,10 @@ export async function createResume(
 
   return response.data;
 }
+
+export async function deleteResume(id: string): Promise<void> {
+  await apiClient<{ success: true; message: string }>(`/resumes/${id}`, {
+    method: "DELETE",
+    auth: true,
+  });
+}
