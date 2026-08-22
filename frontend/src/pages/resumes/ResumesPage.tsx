@@ -32,7 +32,13 @@ function ResumesPage() {
         setListError("");
 
         const response = await getResumes();
-        setResumes(response.data);
+        setResumes(
+  [...response.data].sort(
+    (a, b) =>
+      new Date(b.createdAt).getTime() -
+      new Date(a.createdAt).getTime(),
+  ),
+);
       } catch (err) {
         setListError(
           err instanceof Error ? err.message : "Failed to load resumes.",
@@ -84,6 +90,14 @@ function ResumesPage() {
   }
 
   async function handleDelete(id: string) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this resume? This action cannot be undone.",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
   try {
     setListError("");
     setDeletingResumeId(id);
@@ -185,24 +199,24 @@ function ResumesPage() {
           <div className="resume-list">
             {resumes.map((resume) => (
   <div className="resume-item" key={resume.id}>
-    <div className="resume-item-info">
+    <div className="resume-item-content">
+      <span className="resume-item-label">Resume</span>
       <h3>{resume.title}</h3>
-      <p>{resume.originalFileName}</p>
     </div>
 
     <div className="resume-item-actions">
-      <div className="resume-item-meta">
-        <span>{formatDate(resume.createdAt)}</span>
-      </div>
+      <time dateTime={resume.createdAt}>
+        {formatDate(resume.createdAt)}
+      </time>
 
       <button
-  type="button"
-  className="resume-delete-button"
-  onClick={() => handleDelete(resume.id)}
-  disabled={deletingResumeId === resume.id}
->
-  {deletingResumeId === resume.id ? "Deleting..." : "Delete"}
-</button>
+        type="button"
+        className="resume-delete-button"
+        onClick={() => handleDelete(resume.id)}
+        disabled={deletingResumeId === resume.id}
+      >
+        {deletingResumeId === resume.id ? "Deleting..." : "Delete"}
+      </button>
     </div>
   </div>
 ))}
